@@ -24,33 +24,33 @@ void change_leaves(tree *t, char *leaf_list)
     fprintf(stderr, "Found %d leaves.\n", found);
 }
 
-float get_hierarchy_probability(float *x, tree *hier, int c, int stride)
+float get_hierarchy_probability(float *x, tree *hier, int c)
 {
     float p = 1;
     while(c >= 0){
-        p = p * x[c*stride];
+        p = p * x[c];
         c = hier->parent[c];
     }
     return p;
 }
 
-void hierarchy_predictions(float *predictions, int n, tree *hier, int only_leaves, int stride)
+void hierarchy_predictions(float *predictions, int n, tree *hier, int only_leaves)
 {
     int j;
     for(j = 0; j < n; ++j){
         int parent = hier->parent[j];
         if(parent >= 0){
-            predictions[j*stride] *= predictions[parent*stride]; 
+            predictions[j] *= predictions[parent]; 
         }
     }
     if(only_leaves){
         for(j = 0; j < n; ++j){
-            if(!hier->leaf[j]) predictions[j*stride] = 0;
+            if(!hier->leaf[j]) predictions[j] = 0;
         }
     }
 }
 
-int hierarchy_top_prediction(float *predictions, tree *hier, float thresh, int stride)
+int hierarchy_top_prediction(float *predictions, tree *hier, float thresh)
 {
     float p = 1;
     int group = 0;
@@ -61,7 +61,7 @@ int hierarchy_top_prediction(float *predictions, tree *hier, float thresh, int s
 
         for(i = 0; i < hier->group_size[group]; ++i){
             int index = i + hier->group_offset[group];
-            float val = predictions[(i + hier->group_offset[group])*stride];
+            float val = predictions[i + hier->group_offset[group]];
             if(val > max){
                 max_i = index;
                 max = val;
