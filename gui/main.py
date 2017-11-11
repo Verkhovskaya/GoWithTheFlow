@@ -2,13 +2,14 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from image_renderer import ImageRenderer
 
 class App(QDialog):
     def __init__(self):
         super().__init__()
         self.title = 'GoWithTheFlow - Browse File'
-        self.left = 10
-        self.top = 10
+        self.left = 100
+        self.top = 100
         self.width = 480
         self.height = 400
         self.initUI()
@@ -26,7 +27,6 @@ class App(QDialog):
         self.dropArea.setMinimumSize(200, 200)
 
         windowLayout = QVBoxLayout()
-        windowLayout.addWidget()
         windowLayout.addWidget(self.horizontalGroupBox)
         windowLayout.addWidget(self.dropArea)
         windowLayout.addWidget(buttonLoad)
@@ -46,7 +46,6 @@ class App(QDialog):
         layout.addWidget(buttonBrowse)
 
         self.horizontalGroupBox.setLayout(layout)
-        self.horizontalGroupBox.setMaximumHeight(80)
 
     def openFileNameDialog(self):
         options = QFileDialog.Options()
@@ -65,7 +64,8 @@ class App(QDialog):
     @pyqtSlot()
     def go_pressed(self):
         if not self.dropArea.getImage().isNull():
-            print("go")
+            self.dialog = ImageRenderer(self.dropArea.getImage())
+            self.dialog.show()
 
 class DropArea(QLabel):
     changed = pyqtSignal(QMimeData)
@@ -99,6 +99,10 @@ class DropArea(QLabel):
             self.setImage(pixmap)
         elif mimeData.hasUrls():
             filepath = "\n".join([url.path() for url in mimeData.urls()])
+            # This is really hacky
+            if filepath[1:3] == 'C:':
+                filepath = filepath[1:]
+            print(filepath)
             self.textbox.setText(filepath)
             pixmap = QPixmap(filepath)
             self.setImage(pixmap)
