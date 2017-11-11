@@ -5,7 +5,7 @@ from PyQt5.QtGui import QIcon, QPainter, QPixmap, QPen, QColor, QFont
 
 
 class ImageRenderer(QWidget):
-    def __init__(self, pixmap):
+    def __init__(self, fileURL):
         super().__init__()
 
         self.BORDER_SIZE = 12
@@ -24,7 +24,7 @@ class ImageRenderer(QWidget):
             Qt.green,
             Qt.blue
         ]
-        self.colorIndex = 1
+        self.colorIndex = 0
 
 
         self.drawingNewZone = False
@@ -33,7 +33,8 @@ class ImageRenderer(QWidget):
         self.movingExistingZone = False
         self.moveZone = ()
 
-        self.pixmap = pixmap.scaled(1200, 900, Qt.KeepAspectRatio)
+        self.pixmap = QPixmap(fileURL)
+        self.pixmap = self.pixmap.scaled(1200, 900, Qt.KeepAspectRatio)
 
         self.initUI()
 
