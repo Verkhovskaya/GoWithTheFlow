@@ -6,6 +6,6 @@ def darknet(filename):
     result = subprocess.run((cmd + filename).split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     return result
 
-result = darknet("data/horses.jpg")
+result = darknet("data/testimg.jpg")
 print(result.stdout)
 print(result.stderr)
