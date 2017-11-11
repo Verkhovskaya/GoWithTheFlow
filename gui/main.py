@@ -26,6 +26,7 @@ class App(QDialog):
         self.dropArea.setMinimumSize(200, 200)
 
         windowLayout = QVBoxLayout()
+        windowLayout.addWidget()
         windowLayout.addWidget(self.horizontalGroupBox)
         windowLayout.addWidget(self.dropArea)
         windowLayout.addWidget(buttonLoad)
@@ -51,7 +52,7 @@ class App(QDialog):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         fileName, _ = QFileDialog.getOpenFileName(self, "Browse Filesystem", "",
-                                                  "JPEG (*.jpg, *jpeg);;All Files (*)", options=options)
+                                                  "JPEG (*.jpg, *jpeg);;PNG (*.png);;All Files (*)", options=options)
         return fileName
 
     @pyqtSlot()
@@ -65,7 +66,6 @@ class App(QDialog):
     def go_pressed(self):
         if not self.dropArea.getImage().isNull():
             print("go")
-
 
 class DropArea(QLabel):
     changed = pyqtSignal(QMimeData)
