@@ -22,12 +22,12 @@ class App(QDialog):
         buttonLoad = QPushButton('Go', self)
         buttonLoad.clicked.connect(self.go_pressed)
 
-        dropArea = DropArea()
-        dropArea.setMinimumSize(200, 200)
+        self.dropArea = DropArea(textbox=self.textbox)
+        self.dropArea.setMinimumSize(200, 200)
 
         windowLayout = QVBoxLayout()
         windowLayout.addWidget(self.horizontalGroupBox)
-        windowLayout.addWidget(dropArea)
+        windowLayout.addWidget(self.dropArea)
         windowLayout.addWidget(buttonLoad)
         self.setLayout(windowLayout)
 
@@ -51,22 +51,27 @@ class App(QDialog):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         fileName, _ = QFileDialog.getOpenFileName(self, "Browse Filesystem", "",
-                                                  "JPEG (*.jpg);;All Files (*)", options=options)
+                                                  "JPEG (*.jpg, *jpeg);;All Files (*)", options=options)
         return fileName
 
     @pyqtSlot()
     def browse_filesystem(self):
-        filename = self.openFileNameDialog()
-        self.textbox.setText(filename)
+        filepath = self.openFileNameDialog()
+        self.textbox.setText(filepath)
+        pixmap = QPixmap(filepath)
+        self.dropArea.setImage(pixmap)
 
     @pyqtSlot()
     def go_pressed(self):
-        print("Go")
+        if not self.dropArea.getImage().isNull():
+            print("go")
+
 
 class DropArea(QLabel):
     changed = pyqtSignal(QMimeData)
+    pixmap = None
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, textbox=None):
         super(DropArea, self).__init__(parent)
 
         self.setMinimumSize(200, 200)
@@ -74,6 +79,7 @@ class DropArea(QLabel):
         self.setAlignment(Qt.AlignCenter)
         self.setAcceptDrops(True)
         self.setAutoFillBackground(True)
+        self.textbox = textbox
         self.clear()
 
     def dragEnterEvent(self, event):
@@ -90,17 +96,14 @@ class DropArea(QLabel):
 
         if mimeData.hasImage():
             pixmap = QPixmap(mimeData.imageData())
-            self.setPixmap(pixmap.scaled(self.width(), self.height(), Qt.KeepAspectRatio))
-        elif mimeData.hasHtml():
-            self.setText(mimeData.html())
-            self.setTextFormat(Qt.RichText)
-        elif mimeData.hasText():
-            self.setText(mimeData.text())
-            self.setTextFormat(Qt.PlainText)
+            self.setImage(pixmap)
         elif mimeData.hasUrls():
-            self.setText("\n".join([url.path() for url in mimeData.urls()]))
+            filepath = "\n".join([url.path() for url in mimeData.urls()])
+            self.textbox.setText(filepath)
+            pixmap = QPixmap(filepath)
+            self.setImage(pixmap)
         else:
-            self.setText("Cannot display data")
+            self.textbox.setText("Cannot display data")
 
         self.setBackgroundRole(QPalette.Dark)
         event.acceptProposedAction()
@@ -113,6 +116,17 @@ class DropArea(QLabel):
         self.setText("Drop image here")
         self.setBackgroundRole(QPalette.Dark)
         self.changed.emit(None)
+
+    def getImage(self):
+        return self.pixmap
+
+    def setImage(self, pixmap):
+        self.pixmap = pixmap
+        if pixmap.isNull():
+            self.setText("Cannot display data")
+        else:
+            self.setPixmap(pixmap.scaled(self.width(), self.height(), Qt.KeepAspectRatio))
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
