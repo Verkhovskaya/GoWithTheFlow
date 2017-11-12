@@ -1,7 +1,10 @@
 import sys
+import subprocess
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from PyQt5.QtMultimedia import *
+from PyQt5.QtMultimediaWidgets import *
 from image_renderer import ImageRenderer
 
 class App(QDialog):
@@ -51,14 +54,17 @@ class App(QDialog):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
         fileName, _ = QFileDialog.getOpenFileName(self, "Browse Filesystem", "",
-                                                  "JPEG (*.jpg, *jpeg);;PNG (*.png);;All Files (*)", options=options)
+                                                  "MP4 (*.mp4);;All Files (*)", options=options)
         return fileName
 
     @pyqtSlot()
     def browse_filesystem(self):
         filepath = self.openFileNameDialog()
         self.textbox.setText(filepath)
-        pixmap = QPixmap(filepath)
+
+        subprocess.run("ffmpeg -ss 00:00:00 -i {} -frames:v 1 tmp.jpg".format(filepath).split())
+
+        pixmap = QPixmap("tmp.jpg")
         self.dropArea.setImage(pixmap)
 
     @pyqtSlot()
