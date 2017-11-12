@@ -11,10 +11,10 @@ class ImageRenderer(QWidget):
         self.OFFSET = 0
 
         self.zones = [
-            ('top', 0, 300, Qt.red),
-            ('top', 700, 900, Qt.yellow),
-            ('left', 400, 800, Qt.green),
-            ('bottom', 400, 600, Qt.blue)
+            ('top', 0, 300, colors[0]),
+            ('top', 700, 900, colors[1]),
+            ('left', 400, 800, colors[2]),
+            ('bottom', 400, 600, colors[3])
         ]
 
         self.colors = colors

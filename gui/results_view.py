@@ -19,10 +19,12 @@ class ResultsView(QWidget):
         super().__init__()
 
         self.colors = [
-            Qt.red,
-            Qt.yellow,
-            Qt.green,
-            Qt.blue
+            QColor(127,255,212),
+            QColor(0,139,139),
+            QColor(138,43,226),
+            QColor(0,0,128),
+            QColor(0,100,0),
+            QColor(153,51,51)
         ]
         self.imageRenderer = ImageRenderer(fileURL, self.colors)
 
