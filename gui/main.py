@@ -70,7 +70,7 @@ class App(QDialog):
     @pyqtSlot()
     def go_pressed(self):
         if not self.dropArea.getImage().isNull():
-            self.dialog = ImageRenderer(self.dropArea.getImage())
+            self.dialog = ImageRenderer('C:/test.jpg')
             self.dialog.show()
 
 class DropArea(QLabel):
@@ -89,7 +89,7 @@ class DropArea(QLabel):
         self.clear()
 
     def dragEnterEvent(self, event):
-        self.setText("Drop image here")
+        self.setText("Drop video here")
         self.setBackgroundRole(QPalette.Highlight)
         event.acceptProposedAction()
         self.changed.emit(event.mimeData())
@@ -123,7 +123,7 @@ class DropArea(QLabel):
         event.accept()
 
     def clear(self):
-        self.setText("Drop image here")
+        self.setText("Drop video here")
         self.setBackgroundRole(QPalette.Dark)
         self.changed.emit(None)
 
