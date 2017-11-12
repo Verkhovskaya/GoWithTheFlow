@@ -26,12 +26,49 @@ class App(QDialog):
         buttonLoad = QPushButton('Go', self)
         buttonLoad.clicked.connect(self.go_pressed)
 
+        self.tabs = QTabWidget()
+        self.tab1 = QWidget()
+        self.tab2 = QWidget()
+        self.tabs.addTab(self.tab1, "Media Drop")
+        self.tabs.addTab(self.tab2, "Video Preview")
+        # self.tabs.setMinimumSize(400, 300)
+
+        self.tab1.layout = QVBoxLayout(self)
         self.dropArea = DropArea(textbox=self.textbox)
-        self.dropArea.setMinimumSize(200, 200)
+        self.tab1.layout.addWidget(self.dropArea)
+        self.tab1.setLayout(self.tab1.layout)
+
+        self.tab2.layout = QVBoxLayout(self)
+
+        self.mediaPlayer = QMediaPlayer(None, QMediaPlayer.VideoSurface)
+        videoWidget = QVideoWidget()
+
+        self.playButton = QPushButton()
+        self.playButton.setIcon(self.style().standardIcon(QStyle.SP_MediaPlay))
+        self.playButton.clicked.connect(self.play)
+
+        self.positionSlider = QSlider(Qt.Horizontal)
+        self.positionSlider.setRange(0, 0)
+        self.positionSlider.sliderMoved.connect(self.setPosition)
+
+        controlLayout = QHBoxLayout()
+        controlLayout.setContentsMargins(0, 0, 0, 0)
+        controlLayout.addWidget(self.playButton)
+        controlLayout.addWidget(self.positionSlider)
+
+        self.mediaPlayer.setVideoOutput(videoWidget)
+        self.mediaPlayer.stateChanged.connect(self.mediaStateChanged)
+        self.mediaPlayer.positionChanged.connect(self.positionChanged)
+        self.mediaPlayer.durationChanged.connect(self.durationChanged)
+
+        self.tab2.layout.addWidget(videoWidget)
+        self.tab2.layout.addLayout(controlLayout)
+
+        self.tab2.setLayout(self.tab2.layout)
 
         windowLayout = QVBoxLayout()
         windowLayout.addWidget(self.horizontalGroupBox)
-        windowLayout.addWidget(self.dropArea)
+        windowLayout.addWidget(self.tabs)
         windowLayout.addWidget(buttonLoad)
         self.setLayout(windowLayout)
 
@@ -62,7 +99,7 @@ class App(QDialog):
         filepath = self.openFileNameDialog()
         self.textbox.setText(filepath)
 
-        subprocess.run("ffmpeg -ss 00:00:00 -i {} -frames:v 1 tmp.jpg".format(filepath).split())
+        subprocess.run("ffmpeg -ss 00:00:00 -i {} -frames:v 1 tmp.jpg -y".format(filepath).split())
 
         pixmap = QPixmap("tmp.jpg")
         self.dropArea.setImage(pixmap)
@@ -72,6 +109,31 @@ class App(QDialog):
         if not self.dropArea.getImage().isNull():
             self.dialog = ImageRenderer('C:/test.jpg')
             self.dialog.show()
+
+    def play(self):
+        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+            self.mediaPlayer.pause()
+        else:
+            filepath = self.textbox.displayText()
+            self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(filepath)))
+            self.mediaPlayer.play()
+
+    def mediaStateChanged(self, state):
+        if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
+            self.playButton.setIcon(
+                self.style().standardIcon(QStyle.SP_MediaPause))
+        else:
+            self.playButton.setIcon(
+                self.style().standardIcon(QStyle.SP_MediaPlay))
+
+    def positionChanged(self, position):
+        self.positionSlider.setValue(position)
+
+    def durationChanged(self, duration):
+        self.positionSlider.setRange(0, duration)
+
+    def setPosition(self, position):
+        self.mediaPlayer.setPosition(position)
 
 class DropArea(QLabel):
     changed = pyqtSignal(QMimeData)
@@ -110,7 +172,10 @@ class DropArea(QLabel):
                 filepath = filepath[1:]
             print(filepath)
             self.textbox.setText(filepath)
-            pixmap = QPixmap(filepath)
+
+            subprocess.run("ffmpeg -ss 00:00:00 -i {} -frames:v 1 tmp.jpg -y".format(filepath).split())
+
+            pixmap = QPixmap("tmp.jpg")
             self.setImage(pixmap)
         else:
             self.textbox.setText("Cannot display data")

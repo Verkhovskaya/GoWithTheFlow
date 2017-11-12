@@ -78,8 +78,7 @@ class VideoWindow(QMainWindow):
                                                   QDir.homePath())
 
         if fileName != '':
-            self.mediaPlayer.setMedia(
-                QMediaContent(QUrl.fromLocalFile(fileName)))
+            self.mediaPlayer.setMedia(QMediaContent(QUrl.fromLocalFile(fileName)))
             self.playButton.setEnabled(True)
 
     def exitCall(self):
