@@ -1,11 +1,10 @@
-import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QMainWindow
-from PyQt5.QtCore import Qt, QRect
-from PyQt5.QtGui import QIcon, QPainter, QPixmap, QPen, QColor, QFont
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 
 class ImageRenderer(QWidget):
-    def __init__(self, fileURL):
+    def __init__(self, fileURL, colors):
         super().__init__()
 
         self.BORDER_SIZE = 12
@@ -18,14 +17,8 @@ class ImageRenderer(QWidget):
             ('bottom', 400, 600, Qt.blue)
         ]
 
-        self.colors = [
-            Qt.red,
-            Qt.yellow,
-            Qt.green,
-            Qt.blue
-        ]
+        self.colors = colors
         self.colorIndex = 0
-
 
         self.drawingNewZone = False
         self.mousePressLocation = ()
@@ -46,6 +39,9 @@ class ImageRenderer(QWidget):
         self.HEIGHT = self.pixmap.height()
         self.setGeometry(100, 100, self.WIDTH + 2*self.BORDER_SIZE, self.HEIGHT + 2*self.BORDER_SIZE)
         self.show()
+
+    def minimumSizeHint(self):
+        return QSize(self.WIDTH + 2*self.BORDER_SIZE, self.HEIGHT + 2*self.BORDER_SIZE)
 
     def paintEvent(self, event):
         painter = QPainter()

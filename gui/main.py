@@ -5,7 +5,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
-from image_renderer import ImageRenderer
+from results_view import ResultsView
 
 class App(QDialog):
     def __init__(self):
@@ -70,7 +70,7 @@ class App(QDialog):
     @pyqtSlot()
     def go_pressed(self):
         if not self.dropArea.getImage().isNull():
-            self.dialog = ImageRenderer('C:/test.jpg')
+            self.dialog = ResultsView('C:/test.jpg')
             self.dialog.show()
 
 class DropArea(QLabel):
