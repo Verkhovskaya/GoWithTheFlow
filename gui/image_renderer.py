@@ -4,21 +4,14 @@ from PyQt5.QtCore import *
 
 
 class ImageRenderer(QWidget):
-    def __init__(self, fileURL, colors):
+    def __init__(self, fileURL, zones, colors, colorIndex):
         super().__init__()
 
         self.BORDER_SIZE = 12
         self.OFFSET = 0
 
-        self.zones = [
-            ('top', 0, 300/2, colors[0]),
-            ('top', 700/2, 900/2, colors[1]),
-            ('left', 400/2, 800/2, colors[2]),
-            ('bottom', 400/2, 600/2, colors[3])
-        ]
-
         self.colors = colors
-        self.colorIndex = 0
+        self.colorIndex = colorIndex
 
         self.drawingNewZone = False
         self.mousePressLocation = ()
@@ -27,8 +20,9 @@ class ImageRenderer(QWidget):
         self.moveZone = ()
 
         self.pixmap = QPixmap(fileURL)
-        self.pixmap = self.pixmap.scaled(1200/2, 900/2, Qt.KeepAspectRatio)
+        # self.pixmap = self.pixmap.scaled(1920, 1080, Qt.KeepAspectRatio)
 
+        self.zones = zones
         self.initUI()
 
 
@@ -169,3 +163,6 @@ class ImageRenderer(QWidget):
             )
         self.colorIndex = (self.colorIndex + 1) % len(self.colors)
         return zone
+
+    def getZones(self):
+        return self.zones

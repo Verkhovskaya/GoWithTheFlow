@@ -109,10 +109,12 @@ class App(QDialog):
 
     @pyqtSlot()
     def go_pressed(self):
-        if not self.dropArea.getImage().isNull():
-            run_detection(self.textbox.displayText())
-            self.dialog = ResultsView('tmp.jpg')
-            self.dialog.show()
+        # if not self.dropArea.getImage().isNull():
+        #     run_detection(self.textbox.displayText())
+        #     self.dialog = ResultsView('tmp.jpg')
+        #     self.dialog.show()
+        self.dialog = ResultsView('C:/lined_img.png', 'C:/info.txt')
+        self.dialog.show()
 
     def play(self):
         if self.mediaPlayer.state() == QMediaPlayer.PlayingState:
