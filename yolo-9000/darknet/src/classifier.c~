@@ -1,4 +1,3 @@
-#include "opencv2/videoio/videoio_c.h"
 #include "network.h"
 #include "utils.h"
 #include "parser.h"

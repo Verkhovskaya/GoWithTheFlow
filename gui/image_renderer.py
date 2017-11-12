@@ -11,10 +11,10 @@ class ImageRenderer(QWidget):
         self.OFFSET = 0
 
         self.zones = [
-            ('top', 0, 300, colors[0]),
-            ('top', 700, 900, colors[1]),
-            ('left', 400, 800, colors[2]),
-            ('bottom', 400, 600, colors[3])
+            ('top', 0, 300/2, colors[0]),
+            ('top', 700/2, 900/2, colors[1]),
+            ('left', 400/2, 800/2, colors[2]),
+            ('bottom', 400/2, 600/2, colors[3])
         ]
 
         self.colors = colors
@@ -27,7 +27,7 @@ class ImageRenderer(QWidget):
         self.moveZone = ()
 
         self.pixmap = QPixmap(fileURL)
-        self.pixmap = self.pixmap.scaled(1200, 900, Qt.KeepAspectRatio)
+        self.pixmap = self.pixmap.scaled(1200/2, 900/2, Qt.KeepAspectRatio)
 
         self.initUI()
 

@@ -7,6 +7,9 @@ from PyQt5.QtMultimedia import *
 from PyQt5.QtMultimediaWidgets import *
 from results_view import ResultsView
 
+sys.path.append('../test/')
+from run_detection import *
+
 class App(QDialog):
     def __init__(self):
         super().__init__()
@@ -107,7 +110,8 @@ class App(QDialog):
     @pyqtSlot()
     def go_pressed(self):
         if not self.dropArea.getImage().isNull():
-            self.dialog = ResultsView('C:/test.jpg')
+            run_detection(self.textbox.displayText())
+            self.dialog = ResultsView('tmp.jpg')
             self.dialog.show()
 
     def play(self):
