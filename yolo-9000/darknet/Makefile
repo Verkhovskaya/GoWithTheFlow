@@ -1,6 +1,6 @@
 GPU=0
 CUDNN=0
-OPENCV=0
+OPENCV=1
 DEBUG=0
 
 ARCH= -gencode arch=compute_20,code=[sm_20,sm_21] \
@@ -19,7 +19,7 @@ OBJDIR=./obj/
 CC=gcc
 NVCC=nvcc 
 OPTS=-Ofast
-LDFLAGS= -lm -pthread
+LDFLAGS= -lm -pthread 
 COMMON= 
 CFLAGS=-Wall -Wfatal-errors 
 

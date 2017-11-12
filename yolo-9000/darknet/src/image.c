@@ -1,4 +1,3 @@
-#include "opencv2/videoio/videoio_c.h"
 #include "image.h"
 #include "utils.h"
 #include "blas.h"
@@ -182,6 +181,13 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
 {
     int i;
 
+    FILE *f = fopen("file.txt", "a");
+    if (f == NULL)
+      {
+	printf("Error opening file!\n");
+	exit(1);
+      }
+
     for(i = 0; i < num; ++i){
         int class = max_index(probs[i], classes);
         float prob = probs[i][class];
@@ -212,6 +218,16 @@ void draw_detections(image im, int num, float thresh, box *boxes, float **probs,
             int right = (b.x+b.w/2.)*im.w;
             int top   = (b.y-b.h/2.)*im.h;
             int bot   = (b.y+b.h/2.)*im.h;
+
+            FILE *f = fopen("file.txt", "a");
+            if (f == NULL)
+              {
+            printf("Error opening file!\n");
+            exit(1);
+              }
+
+            fprintf(f, "[%i %i]", (left+right)/2, (top+bot)/2);
+            fclose(f);
 
             if(left < 0) left = 0;
             if(right > im.w-1) right = im.w-1;
